@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: ../../docker/Dockerfile.gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - core-engine
+    environment:
+      - RUST_LOG=info
+      - UPSTREAM_URL=http://core-engine:8081
+
+  core-engine:
+    build:
+      context: ./services/core-engine
+      dockerfile: ../../docker/Dockerfile.engine
+    ports:
+      - "8081:8081"
+    environment:
+      - RUST_LOG=info
+    deploy:
+      resources:
+        limits:
+          memory: 16G
